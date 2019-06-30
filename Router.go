@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"github.com/valyala/fasthttp"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -11,7 +10,7 @@ import (
 
 
 var (
-	filesHandler = fasthttp.FSHandler("files", 0)
+	filesHandler = fasthttp.FSHandler("/home/daniel/repo/Metis-Link/files", 0)
 	activeKeys = map[string]string{}
 	cookieKey = "Authenticate"
 	storageUrl = os.Getenv("STORAGE")
@@ -28,7 +27,6 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 			ctx.Redirect("badboi", 400)
 			return
 		}
-		log.Println("got link: "+link)
 		entry := CreateShare("link", time.Now(), ctx.RemoteAddr().String(), link)
 		json, err := entry.toJson()
 		if err != nil{
