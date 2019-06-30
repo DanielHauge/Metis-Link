@@ -1,0 +1,25 @@
+resources:
+- name: git-repo
+  type: git
+  source:
+    uri: git@github.com:DanielHauge/Metis-Auth.git
+    branch: master
+    private_key: ((sshkey))
+
+- name: container
+  type: docker-image
+  source:
+    username: ((docker-hub-username))
+    password: ((docker-hub-password))
+    repository: ((docker-hub-username))/metis-auth
+
+jobs:
+- name: build-docker-image
+  public: true
+  serial: true
+  plan:
+  - get: git-repo
+    trigger: true
+  - put: container
+    params:
+      build: git-repo
