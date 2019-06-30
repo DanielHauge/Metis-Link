@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"github.com/valyala/fasthttp"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -22,23 +23,22 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 		filesHandler(ctx)
 	}
 	if ctx.IsPost(){
-		link := ctx.FormValue("link")
-		if len(string(link)) < 5{
+		link := string(ctx.FormValue("link"))
+		if len(link) < 5{
 			ctx.Redirect("badboi", 400)
+			return
 		}
-
-		entry := CreateShare("link", time.Now(), ctx.RemoteAddr().String(), (string(link)))
+		log.Println("got link: "+link)
+		entry := CreateShare("link", time.Now(), ctx.RemoteAddr().String(), link)
 		json, err := entry.toJson()
 		if err != nil{
 			ctx.Redirect("badboi", 500)
-			ctx.Done()
 			return
 		}
 
 		res, err := http.Post(storageUrl, "application/json", bytes.NewBuffer(json))
 		if err != nil{
 			ctx.Redirect("badboi", 500)
-			ctx.Done()
 			return
 		}
 
