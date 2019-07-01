@@ -10,7 +10,7 @@ import (
 
 
 var (
-	filesHandler = fasthttp.FSHandler("/home/daniel/repo/Metis-Link/files", 0)
+	filesHandler = fasthttp.FSHandler("files", 0)
 	activeKeys = map[string]string{}
 	cookieKey = "Authenticate"
 	storageUrl = os.Getenv("STORAGE")
